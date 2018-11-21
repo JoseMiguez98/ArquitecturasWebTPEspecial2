@@ -51,6 +51,8 @@ public class UserDAO implements DAO<User, Integer> {
 			if(user!=null) {
 				user.setName(updatedUser.getName());
 				user.setKnowledge(updatedUser.getKnowledge());
+				user.setIsEvaluator(updatedUser.getIsEvaluator());
+				user.setIsAuthor(updatedUser.getIsAuthor());
 				user.setQualification();
 			}
 			else {
