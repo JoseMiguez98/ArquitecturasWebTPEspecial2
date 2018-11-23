@@ -24,19 +24,27 @@ public class ProjectRESTController extends RestController {
 	public List<Project> getAllProjects() {
 		return ProjectDAO.getInstance().findAll();
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createProject(Project project) {
-		Project result= ProjectDAO.getInstance().persist(project);
-		if(result==null) {
-			throw new RecursoDuplicado(project.getId_project());
-		}else {
-			return Response.status(201).entity(project).build();
+		User author = UserDAO.getInstance().findById(project.getIdAuthor());
+
+		if(author==null) {
+			throw new RecursoNoExiste(project.getIdAuthor());
+		}
+		else {
+			project.setAuthor(author);
+			Project result= ProjectDAO.getInstance().persist(project);
+			if(result==null) {
+				throw new RecursoDuplicado(project.getId_project());
+			}else {
+				return Response.status(201).entity(project).build();
+			}	
 		}
 	}
-	
+
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -48,17 +56,17 @@ public class ProjectRESTController extends RestController {
 		else
 			throw new RecursoNoExiste(id);
 	}
-	
-//	@PUT
-//	@Path("/{id}")
-//	@Consumes(MediaType.APPLICATION_JSON)
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response updateProject(@PathParam("id") int id,Project project) {
-//		Project project_entity = ProjectDAO.getInstance().findById(id);
-//		if(project_entity!=null) {
-//			ProjectDAO.getInstance().update(id, project);
-//			return Response.status(200).entity(project).build();
-//		}
-//		throw new RecursoNoExiste(id);
-//	}
+
+	//	@PUT
+	//	@Path("/{id}")
+	//	@Consumes(MediaType.APPLICATION_JSON)
+	//	@Produces(MediaType.APPLICATION_JSON)
+	//	public Response updateProject(@PathParam("id") int id,Project project) {
+	//		Project project_entity = ProjectDAO.getInstance().findById(id);
+	//		if(project_entity!=null) {
+	//			ProjectDAO.getInstance().update(id, project);
+	//			return Response.status(200).entity(project).build();
+	//		}
+	//		throw new RecursoNoExiste(id);
+	//	}
 }

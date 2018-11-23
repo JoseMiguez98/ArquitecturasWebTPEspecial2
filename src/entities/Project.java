@@ -20,11 +20,15 @@ public class Project implements Serializable {
 	@Convert(converter = ListToStringConverter.class)
 	private List<String> topics = new ArrayList<String>();
 	private String category;
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne
+	@JsonIgnore
 	private User author;
 	private static final long serialVersionUID = 1L;
 	@Transient
 	List<User>revisors  = new ArrayList<User>();
+	@Transient
+	@JsonProperty
+	int idAuthor;
 
 	public Project() {
 		super();
@@ -35,9 +39,18 @@ public class Project implements Serializable {
 
 	public void setId_project(int id_project) {
 		this.id_project = id_project;
-	}   
+	}
+	
 	public List<String> getTopics() {
 		return new ArrayList<String>(this.topics);
+	}
+	
+	public int getIdAuthor() {
+		return this.idAuthor;
+	}
+	
+	public void setIdAuthor(int id) {
+		this.idAuthor = id;
 	}
 
 	public void addTopic(String topic) {

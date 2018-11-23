@@ -80,7 +80,7 @@ public class UserRESTController extends RestController {
 		else
 			throw new RecursoNoExiste(id);
 	}
-	
+
 	@GET
 	@Path("/{id}/findRevBetween")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -105,17 +105,17 @@ public class UserRESTController extends RestController {
 		if(user==null) {
 			throw new RecursoNoExiste(rev.getIdUser());
 		}else {
-			
+
 			Project project = ProjectDAO.getInstance().findById(rev.getIdProject());
 			if(project == null) {
 				throw new RecursoNoExiste(rev.getIdProject());
 			}
-			
+
 			else {
 
 				try {
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-			        String date = formatter.format(rev.getRevisionDate());
+					String date = formatter.format(rev.getRevisionDate());
 					Revision revision = user.addRevision(project, date);
 					RevisionDAO.getInstance().persist(revision);
 					UserDAO.getInstance().update(user.getId_user(), user);
@@ -124,8 +124,20 @@ public class UserRESTController extends RestController {
 					e.printStackTrace();
 				}
 				return Response.status(201).entity(rev).build();	
-				
+
 			}
 		}
+	}
+
+	@GET
+	@Path("/{id}/works")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Project> getAllResearchWorks(@PathParam("id") String msg) {
+		int id = Integer.valueOf(msg);
+		User user = UserDAO.getInstance().findById(id);
+		if(user!=null)
+			return UserDAO.getInstance().getAllResearchWorks(id);
+		else
+			throw new RecursoNoExiste(id);
 	}
 }
