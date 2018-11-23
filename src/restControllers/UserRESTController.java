@@ -84,7 +84,7 @@ public class UserRESTController extends RestController {
 	@GET
 	@Path("/{id}/findRevBetween")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Project> findPerrosByEdad(@QueryParam("from") String from,
+	public List<Project> findRevsBetween(@QueryParam("from") String from,
 			@QueryParam("to") String to, @PathParam("id") int id) {
 		List <Project> revs = new ArrayList<Project>();
 		try {
@@ -114,6 +114,9 @@ public class UserRESTController extends RestController {
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 					String date = formatter.format(rev.getRevisionDate());
 					Revision revision = user.addRevision(project, date);
+					if(revision == null) {
+						return Response.status(403).entity(rev).build();
+					}
 					RevisionDAO.getInstance().persist(revision);
 					UserDAO.getInstance().update(user.getId_user(), user);
 				} catch (ParseException e) {
