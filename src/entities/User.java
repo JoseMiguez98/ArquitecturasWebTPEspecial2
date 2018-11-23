@@ -35,7 +35,7 @@ public class User implements Serializable {
 	@Convert(converter = ListToStringConverter.class)
 	private List<String> knowledge = new ArrayList<String>();
 	@JsonIgnore
-	@OneToMany(mappedBy="user", cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy="user",fetch = FetchType.EAGER)
 	private List<Revision> revisions = new ArrayList<Revision>();
 	private String qualification;
 	private static final long serialVersionUID = 1L;
@@ -132,7 +132,7 @@ public class User implements Serializable {
 		return this.revisions;
 	}
 	
-	public void addRevision(Project project, String str_date) throws ParseException {
+	public Revision addRevision(Project project, String str_date) throws ParseException {
 		if(project.canBeEvaluated(this)) {
 			Date date = new SimpleDateFormat("dd/MM/yyyy").parse(str_date);
 			Date formattedDate = new Date(date.getYear(),date.getMonth(),date.getDate());
@@ -142,7 +142,9 @@ public class User implements Serializable {
 			rev.setRevisionDate(formattedDate);
 			this.revisions.add(rev);
 			project.addRevisor(this);
+			return rev;
 		}
+		return null;
 	}
 	
 	@JsonIgnore

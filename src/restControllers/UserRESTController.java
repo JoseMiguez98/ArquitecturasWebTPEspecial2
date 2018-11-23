@@ -3,6 +3,7 @@ package restControllers;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -12,10 +13,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import dao.ProjectDAO;
+import dao.RevisionDAO;
 import dao.UserDAO;
 import entities.Project;
 import entities.Revision;
@@ -77,6 +80,21 @@ public class UserRESTController extends RestController {
 		else
 			throw new RecursoNoExiste(id);
 	}
+	
+	@GET
+	@Path("/{id}/findRevBetween")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Project> findPerrosByEdad(@QueryParam("from") String from,
+			@QueryParam("to") String to, @PathParam("id") int id) {
+		List <Project> revs = new ArrayList<Project>();
+		try {
+			revs = UserDAO.getInstance().getRevisionsBetween(id, from, to);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return revs;
+	}
 
 	@POST
 	@Path("/rev")
@@ -98,8 +116,8 @@ public class UserRESTController extends RestController {
 				try {
 					DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 			        String date = formatter.format(rev.getRevisionDate());
-					System.out.println(date);
-					user.addRevision(project, date);
+					Revision revision = user.addRevision(project, date);
+					RevisionDAO.getInstance().persist(revision);
 					UserDAO.getInstance().update(user.getId_user(), user);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
