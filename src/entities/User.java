@@ -34,8 +34,8 @@ public class User implements Serializable {
 	private boolean isAuthor = false;
 	@Convert(converter = ListToStringConverter.class)
 	private List<String> knowledge = new ArrayList<String>();
-	@OneToMany(mappedBy="user", cascade = CascadeType.PERSIST)
 	@JsonIgnore
+	@OneToMany(mappedBy="user", cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
 	private List<Revision> revisions = new ArrayList<Revision>();
 	private String qualification;
 	private static final long serialVersionUID = 1L;
@@ -129,7 +129,7 @@ public class User implements Serializable {
 	}
 	
 	public List<Revision> getRevisions() {
-		return revisions;
+		return this.revisions;
 	}
 	
 	public void addRevision(Project project, String str_date) throws ParseException {
@@ -148,6 +148,11 @@ public class User implements Serializable {
 	@JsonIgnore
 	public int getRevisionsSize() {
 		return this.revisions.size();
+	}
+	
+	@JsonIgnore
+	public void setRevisions(List<Revision>_r) {
+		this.revisions = _r;
 	}
 	
 	public boolean hasSufficientKnowledges(Project project) {

@@ -53,6 +53,7 @@ public class UserDAO implements DAO<User, Integer> {
 				user.setKnowledge(updatedUser.getKnowledge());
 				user.setIsEvaluator(updatedUser.getIsEvaluator());
 				user.setIsAuthor(updatedUser.getIsAuthor());
+				user.setRevisions(updatedUser.getRevisions());
 				user.setQualification();
 			}
 			else {
@@ -60,6 +61,7 @@ public class UserDAO implements DAO<User, Integer> {
 			}
 		}
 		finally {
+			System.out.println("Here!!");
 			em.flush();
 			em.getTransaction().commit();
 			em.close();
